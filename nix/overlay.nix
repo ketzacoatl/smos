@@ -10,6 +10,8 @@ final:
             in final.lib.genAttrs [
               "smos-data"
               "smos-data-gen"
+              "smos-cursor"
+              "smos-cursor-gen"
             ] smosPkg
         );
       });

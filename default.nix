@@ -5,7 +5,11 @@ let
     (pkgs.fetchFromGitHub (import ./nix/validity-version.nix)
     + "/overlay.nix")
   );
+  cursor-overlay = import (
+    (pkgs.fetchFromGitHub (import ./nix/cursor-version.nix)
+    + "/nix/overlay.nix")
+  );
 in pkgsv {
-  overlays = [ validity-overlay (import ./nix/overlay.nix) ];
+  overlays = [ validity-overlay cursor-overlay (import ./nix/overlay.nix) ];
   config.allowUnfree = true;
 }
