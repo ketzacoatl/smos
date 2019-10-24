@@ -40,6 +40,13 @@ genHiddenFile =
 filterHiddenFiles :: ContentsMap -> ContentsMap
 filterHiddenFiles = ContentsMap . M.filterWithKey (\p _ -> isHidden p) . contentsMapFiles
 
+genFileThatDoesNotFitWith :: Path Rel File -> Gen (Path Rel File)
+genFileThatDoesNotFitWith f =
+  genValid `suchThatMap`
+  (\f' -> do
+     d <- parseRelDir (fromRelFile f)
+     pure $ d </> f')
+
 instance GenValid ContentsMap where
   genValid = genValidStructurally
   shrinkValid = shrinkValidStructurally

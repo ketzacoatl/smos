@@ -510,6 +510,19 @@ spec =
                         fullySyncTwoClients c1 c2
                         assertClientContents c1 m1
                         assertClientContents c2 m1
+            it "successfully syncs two files that don't fit into the same directory" $ \cenv ->
+              forAllValid $ \f1 ->
+                forAll (genFileThatDoesNotFitWith f1) $ \f2 ->
+                  forAllValid $ \(contents1, contents2) ->
+                    withNewRegisteredUser cenv $ \r ->
+                      withSyncClient cenv r $ \c1 ->
+                        withSyncClient cenv r $ \c2 -> do
+                          setupClientContents c1 (CM.singleton f1 contents1)
+                          setupClientContents c2 (CM.singleton f2 contents2)
+                          fullySyncTwoClients c1 c2
+                          c1m <- readClientContents c1
+                          c2m <- readClientContents c2
+                          c1m `shouldBe` c2m
       describe "From two clients, concurrently" $ do
         it "succesfully syncs two of the same client concurrently" $ \cenv ->
           forAllValid $ \m1 ->
