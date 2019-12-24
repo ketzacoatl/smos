@@ -186,9 +186,9 @@ renderStateHistoryTemplate =
 
 renderStateHistoryEntryTemplate :: StateHistoryEntryTemplate -> Render StateHistoryEntry
 renderStateHistoryEntryTemplate e = do
-  let ts = todoState "TODO"
+  let ts = todoState $ T.pack "TODO"
   now <- asks renderContextTime
-  e' <- entrySetState now (Just ts) e
+  e' <- entrySetState now ts e
   case e' of
     Nothing -> lift $ Failure [RenderErrorStateEntryValidity e ts]
     Just ts -> pure ts
