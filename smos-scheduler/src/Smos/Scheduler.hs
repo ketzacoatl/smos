@@ -185,7 +185,13 @@ renderStateHistoryTemplate =
   fmap StateHistory . mapM renderStateHistoryEntryTemplate . stateHistoryEntryTemplates
 
 renderStateHistoryEntryTemplate :: StateHistoryEntryTemplate -> Render StateHistoryEntry
-renderStateHistoryEntryTemplate = undefined
+renderStateHistoryEntryTemplate e = do
+  let ts = todoState "TODO"
+  now <- asks renderContextTime
+  e' <- entrySetState now (Just ts) e
+  case e' of
+    Nothing -> lift $ Failure [RenderErrorStateEntryValidity e ts]
+    Just ts -> pure ts
 
 renderTagsTemplate :: Set Tag -> Render (Set Tag)
 renderTagsTemplate = fmap S.fromList . mapM renderTagTemplate . S.toList
@@ -233,6 +239,7 @@ data RenderError
   = RenderErrorPathValidity (Path Rel File) String
   | RenderErrorHeaderValidity Header Text
   | RenderErrorContentsValidity Contents Text
+  | RenderErrorStateEntryValidity Entry Text
   | RenderErrorTagValidity Tag Text
   | RenderErrorPropertyValueValidity PropertyValue Text
   deriving (Show, Eq, Generic)
